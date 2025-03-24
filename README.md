@@ -1,16 +1,21 @@
 # Filament Flatpickr Plugin
 
-![Coverage](https://img.shields.io/badge/coverage-100%25-brightgreen.svg)
+[![Coverage](https://codecov.io/gh/Noraitec/filament-flatpickr-plugin/branch/main/graph/badge.svg)](https://codecov.io/gh/Noraitec/filament-flatpickr-plugin)
 [![Tests](https://github.com/usuario/repo/actions/workflows/tests.yml/badge.svg)](https://github.com/usuario/repo/actions/workflows/tests.yml)
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/noraitec/filament-flatpickr-plugin.svg)](https://packagist.org/packages/noraitec/filament-flatpickr-plugin)
 [![Total Downloads](https://img.shields.io/packagist/dt/noraitec/filament-flatpickr-plugin.svg)](https://packagist.org/packages/noraitec/filament-flatpickr-plugin)
 [![License: LGPL v3](https://img.shields.io/badge/License-LGPL%20v3-blue.svg)](https://www.gnu.org/licenses/lgpl-3.0)
+[![Changelog](https://img.shields.io/badge/changelog-keepachangelog-brightgreen.svg)](https://keepachangelog.com/en/1.0.0/)
+
 
 
 
 Un plugin completo de Filament v3 que integra la librería Flatpickr, permitiendo configurar todos los parámetros de su API, incluidos los `locales`, `rangos`, `formato`, `estilos` y más.
 
 
+## 🧾 Changelog
+
+Revisá el historial completo de cambios en [CHANGELOG.md](./CHANGELOG.md)
 
 ---
 
