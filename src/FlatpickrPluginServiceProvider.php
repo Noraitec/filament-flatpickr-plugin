@@ -33,8 +33,7 @@ class FlatpickrPluginServiceProvider extends ServiceProvider
     public function boot(): void
     {
         // Vistas del componente
-        $this->loadViewsFrom(__DIR__.'/../resources/views', 'filament-flatpickr');
-
+        $this->loadViewsFrom(__DIR__.'/../resources/views', 'filament-flatpickr-plugin');
         // Publicar vistas
         $this->publishes([
             __DIR__.'/../resources/views' => resource_path('views/vendor/filament-flatpickr'),
