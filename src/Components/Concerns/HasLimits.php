@@ -1,4 +1,14 @@
 <?php
+/**
+ * This file is part of the Noraitec Filament Flatpickr Plugin.
+ *
+ * (c) Noraitec dsotelo@noraitec.com
+ *
+ * This source file is subject to the GNU Lesser General Public License (LGPL-3.0)
+ * that is bundled with this source code in the LICENSE file.
+ * For details see <https://www.gnu.org/licenses/lgpl-3.0.html>
+ */
+
 
 namespace Noraitec\FilamentFlatpickrPlugin\Components\Concerns;
 
@@ -16,53 +26,7 @@ trait HasLimits
         return $this;
     }
 
-    public function defaultDate(string|array $date): static
-    {
-        $this->options['defaultDate'] = $date;
-        return $this;
-    }
 
-    public function defaultHour(int $hour): static
-    {
-        $this->options['defaultHour'] = $hour;
-        return $this;
-    }
-
-    public function defaultMinute(int $minute): static
-    {
-        $this->options['defaultMinute'] = $minute;
-        return $this;
-    }
-
-    public function defaultSeconds(int $seconds): static
-    {
-        $this->options['defaultSeconds'] = $seconds;
-        return $this;
-    }
-
-    public function hourIncrement(int $value): static
-    {
-        $this->options['hourIncrement'] = $value;
-        return $this;
-    }
-
-    public function minuteIncrement(int $value): static
-    {
-        $this->options['minuteIncrement'] = $value;
-        return $this;
-    }
-
-    public function disable(array $dates): static
-    {
-        $this->options['disable'] = $dates;
-        return $this;
-    }
-
-    public function enable(array $dates): static
-    {
-        $this->options['enable'] = $dates;
-        return $this;
-    }
 
     public function disableFunction(string $jsFunction): static
     {

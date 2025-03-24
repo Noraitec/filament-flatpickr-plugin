@@ -1,4 +1,14 @@
 <?php
+/**
+ * This file is part of the Noraitec Filament Flatpickr Plugin.
+ *
+ * (c) Noraitec dsotelo@noraitec.com
+ *
+ * This source file is subject to the GNU Lesser General Public License (LGPL-3.0)
+ * that is bundled with this source code in the LICENSE file.
+ * For details see <https://www.gnu.org/licenses/lgpl-3.0.html>
+ */
+
 
 namespace Noraitec\FilamentFlatpickrPlugin\Components\Concerns;
 
@@ -22,11 +32,7 @@ trait HasRangeOptions
         return $this;
     }
 
-    public function disable(array $dates): static
-    {
-        $this->options['disable'] = $dates;
-        return $this;
-    }
+ 
 
     public function disableFunction(string $jsFunction): static
     {
@@ -34,11 +40,7 @@ trait HasRangeOptions
         return $this;
     }
 
-    public function enable(array $dates): static
-    {
-        $this->options['enable'] = $dates;
-        return $this;
-    }
+    
 
     public function enableFunction(string $jsFunction): static
     {
@@ -52,27 +54,4 @@ trait HasRangeOptions
         return $this;
     }
 
-    public function weekNumbers(bool $enabled = true): static
-    {
-        $this->options['weekNumbers'] = $enabled;
-        return $this;
-    }
-
-    public function shorthandCurrentMonth(bool $enabled = true): static
-    {
-        $this->options['shorthandCurrentMonth'] = $enabled;
-        return $this;
-    }
-
-    public function monthSelectorType(string $type): static
-    {
-        $allowed = ['dropdown', 'static'];
-
-        if (! in_array($type, $allowed)) {
-            throw new \InvalidArgumentException("Tipo inválido de selector de mes: {$type}");
-        }
-
-        $this->options['monthSelectorType'] = $type;
-        return $this;
-    }
 }
