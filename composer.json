@@ -1,6 +1,5 @@
 {
   "name": "noraitec/filament-flatpickr-plugin",
-  "version": "v1.0.1",
   "description": "Plugin de Filament que integra Flatpickr con soporte completo para su API y configuración avanzada de calendario.",
   "type": "filament-plugin",
   "license": "LGPL-3.0-or-later",
