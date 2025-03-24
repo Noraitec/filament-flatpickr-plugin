@@ -1,14 +1,12 @@
 # 🧩 Filament Flatpickr Plugin
 
 
-[![Coverage](https://codecov.io/gh/Noraitec/filament-flatpickr-plugin/branch/main/graph/badge.svg)](https://codecov.io/gh/Noraitec/filament-flatpickr-plugin)  
+[![Coverage](https://codecov.io/gh/Noraitec/filament-flatpickr-plugin/branch/main/graph/badge.svg)](https://codecov.io/gh/Noraitec/filament-flatpickr-plugin)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/noraitec/filament-flatpickr-plugin.svg)](https://packagist.org/packages/noraitec/filament-flatpickr-plugin)
+[![Total Downloads](https://img.shields.io/packagist/dt/noraitec/filament-flatpickr-plugin.svg)](https://packagist.org/packages/noraitec/filament-flatpickr-plugin)
+[![License: LGPL v3](https://img.shields.io/badge/License-LGPL%20v3-blue.svg)](https://www.gnu.org/licenses/lgpl-3.0)
+[![Changelog](https://img.shields.io/badge/changelog-keepachangelog-brightgreen.svg)](https://github.com/Noraitec/filament-flatpickr-plugin/blob/main/CHANGELOG.md)  
 [![Tests](https://github.com/Noraitec/filament-flatpickr-plugin/actions/workflows/tests.yml/badge.svg)](https://github.com/Noraitec/filament-flatpickr-plugin/actions/workflows/tests.yml)
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/noraitec/filament-flatpickr-plugin.svg)](https://packagist.org/packages/noraitec/filament-flatpickr-plugin)  
-[![Total Downloads](https://img.shields.io/packagist/dt/noraitec/filament-flatpickr-plugin.svg)](https://packagist.org/packages/noraitec/filament-flatpickr-plugin)  
-[![License: LGPL v3](https://img.shields.io/badge/License-LGPL%20v3-blue.svg)](https://www.gnu.org/licenses/lgpl-3.0)  
-[![Changelog](https://img.shields.io/badge/changelog-keepachangelog-brightgreen.svg)](https://github.com/Noraitec/filament-flatpickr-plugin/blob/main/CHANGELOG.md)
-
-
 
 
 
