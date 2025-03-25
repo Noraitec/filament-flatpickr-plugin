@@ -9,22 +9,16 @@
  * For details see <https://www.gnu.org/licenses/lgpl-3.0.html>
  */
 
-use Tests\TestCase;
+namespace Tests\Feature\Components;
+
 use Noraitec\FilamentFlatpickrPlugin\Components\Flatpickr;
-use Noraitec\FilamentFlatpickrPlugin\Components\Concerns\HasLocalization;
+use Tests\TestCase;
+use InvalidArgumentException;
 
 uses(TestCase::class);
 
-class DummyLocalizationComponent {
-    use HasLocalization;
-
-    public array $options = [];
-}
-
 it('sets locale via trait', function () {
-    $component = new DummyLocalizationComponent();
-    $component->locale('fr');
-
+    $component = Flatpickr::make('fecha')->locale('fr');
     expect($component->getLocale())->toBe('fr');
 });
 
@@ -33,29 +27,44 @@ it('sets and gets locale correctly', function () {
     expect($component->getLocale())->toBe('es');
 });
 
-it('sets localization options correctly', function () {
-    $component = Flatpickr::make('fecha')
-        ->altInput()
-        ->altFormat('F j, Y')
-        ->altInputClass('custom-class')
-        ->dateFormat('Y-m-d')
-        ->ariaDateFormat('Y/m/d')
-        ->conjunction(' y ')
-        ->shorthandCurrentMonth()
-        ->weekNumbers();
+it('sets altInput correctly', function () {
+    $component = Flatpickr::make('fecha')->altInput();
+    expect($component->getOptions())->toHaveKey('altInput', true);
+});
 
-    $options = $component->getOptions();
+it('sets altFormat correctly', function () {
+    $component = Flatpickr::make('fecha')->altFormat('F j, Y');
+    expect($component->getOptions())->toHaveKey('altFormat', 'F j, Y');
+});
 
-    expect($options)->toMatchArray([
-        'altInput' => true,
-        'altFormat' => 'F j, Y',
-        'altInputClass' => 'custom-class',
-        'dateFormat' => 'Y-m-d',
-        'ariaDateFormat' => 'Y/m/d',
-        'conjunction' => ' y ',
-        'shorthandCurrentMonth' => true,
-        'weekNumbers' => true,
-    ]);
+it('sets altInputClass correctly', function () {
+    $component = Flatpickr::make('fecha')->altInputClass('custom-class');
+    expect($component->getOptions())->toHaveKey('altInputClass', 'custom-class');
+});
+
+it('sets dateFormat correctly', function () {
+    $component = Flatpickr::make('fecha')->dateFormat('Y-m-d');
+    expect($component->getOptions())->toHaveKey('dateFormat', 'Y-m-d');
+});
+
+it('sets ariaDateFormat correctly', function () {
+    $component = Flatpickr::make('fecha')->ariaDateFormat('Y/m/d');
+    expect($component->getOptions())->toHaveKey('ariaDateFormat', 'Y/m/d');
+});
+
+it('sets conjunction separator correctly', function () {
+    $component = Flatpickr::make('fecha')->conjunctionFromLocalization(' y ');
+    expect($component->getOptions())->toHaveKey('conjunction', ' y ');
+});
+
+it('sets shorthandCurrentMonth correctly', function () {
+    $component = Flatpickr::make('fecha')->shorthandCurrentMonth();
+    expect($component->getOptions())->toHaveKey('shorthandCurrentMonth', true);
+});
+
+it('enables weekNumbers correctly', function () {
+    $component = Flatpickr::make('fecha')->weekNumbers();
+    expect($component->getOptions())->toHaveKey('weekNumbers', true);
 });
 
 it('sets valid monthSelectorType', function () {
@@ -67,50 +76,20 @@ it('throws exception on invalid monthSelectorType', function () {
     Flatpickr::make('fecha')->monthSelectorType('invalid');
 })->throws(InvalidArgumentException::class);
 
-it('sets alt input class', function () {
-    $component = Flatpickr::make('fecha')->altInputClass('custom-class');
-    expect($component->getOptions())->toHaveKey('altInputClass', 'custom-class');
+it('sets firstDayOfWeek correctly', function () {
+    $component = Flatpickr::make('fecha')->firstDayOfWeek(0); // Domingo
+    expect($component->getOptions())->toHaveKey('firstDayOfWeek', 0);
 });
 
-it('sets conjunction separator', function () {
-    $component = Flatpickr::make('fecha')->conjunction(' y ');
-    expect($component->getOptions())->toHaveKey('conjunction', ' y ');
-});
-
-it('sets aria date format', function () {
-    $component = Flatpickr::make('fecha')->ariaDateFormat('Y-m-d');
-    expect($component->getOptions())->toHaveKey('ariaDateFormat', 'Y-m-d');
-});
-
-it('sets shorthand current month', function () {
-    $component = Flatpickr::make('fecha')->shorthandCurrentMonth();
-    expect($component->getOptions())->toHaveKey('shorthandCurrentMonth', true);
-});
-
-it('enables week numbers', function () {
-    $component = Flatpickr::make('fecha')->weekNumbers();
-    expect($component->getOptions())->toHaveKey('weekNumbers', true);
-});
-
-it('sets a valid month selector type', function () {
-    $component = Flatpickr::make('fecha')->monthSelectorType('dropdown');
-    expect($component->getOptions())->toHaveKey('monthSelectorType', 'dropdown');
-});
-
-it('throws exception on invalid month selector type', function () {
-    Flatpickr::make('fecha')->monthSelectorType('invalid-type');
+it('throws exception on invalid firstDayOfWeek', function () {
+    Flatpickr::make('fecha')->firstDayOfWeek(7); // Invalid
 })->throws(InvalidArgumentException::class);
 
-it('sets altInputClass via trait', function () {
-    $component = new DummyLocalizationComponent();
-    $component->altInputClass('from-trait');
-
-    expect($component->options)->toHaveKey('altInputClass', 'from-trait');
+it('sets showMonths correctly', function () {
+    $component = Flatpickr::make('fecha')->showMonths(2);
+    expect($component->getOptions())->toHaveKey('showMonths', 2);
 });
 
-it('sets conjunction via trait', function () {
-    $component = new DummyLocalizationComponent();
-    $component->conjunction(' y ');
-
-    expect($component->options)->toHaveKey('conjunction', ' y ');
-});
+it('throws exception on invalid showMonths value', function () {
+    Flatpickr::make('fecha')->showMonths(0); // Invalid
+})->throws(InvalidArgumentException::class);

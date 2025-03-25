@@ -1,11 +1,22 @@
+@php
+    $config = $getFlatpickrConfig();
+    $rawKeys = ['onChange', 'onOpen', 'onClose', 'onReady', 'onValueUpdate'];
+    $jsOptions = '{' . collect($config)->map(function ($value, $key) use ($rawKeys) {
+        if (in_array($key, $rawKeys)) {
+            return "$key: $value";
+        }
+        return "$key: " . json_encode($value);
+    })->join(', ') . '}';
+@endphp
+
 <x-dynamic-component
     :component="$getFieldWrapperView()"
     :field="$field"
 >
     <div
         x-data="{}"
-        x-init="flatpickr($refs.input, {{ json_encode($getFlatpickrConfig()) }})"
-        @flatpickr:refresh.window="flatpickr($refs.input, {{ json_encode($getFlatpickrConfig()) }})"
+        x-init="flatpickr($refs.input, {!! $jsOptions !!})"
+        @flatpickr:refresh.window="flatpickr($refs.input, {!! $jsOptions !!})"
         class="filament-forms-input-wrapper"
     >
         <input

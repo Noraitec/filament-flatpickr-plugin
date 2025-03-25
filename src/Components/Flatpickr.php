@@ -9,44 +9,73 @@
  * For details see <https://www.gnu.org/licenses/lgpl-3.0.html>
  */
 
-
 namespace Noraitec\FilamentFlatpickrPlugin\Components;
 
 use Filament\Forms\Components\Field;
-use Noraitec\FilamentFlatpickrPlugin\Components\Concerns\HasCallbacks;
-use Noraitec\FilamentFlatpickrPlugin\Components\Concerns\HasLimits;
-use Noraitec\FilamentFlatpickrPlugin\Components\Concerns\HasLocalization;
-use Noraitec\FilamentFlatpickrPlugin\Components\Concerns\HasPositioning;
-use Noraitec\FilamentFlatpickrPlugin\Components\Concerns\HasRangeOptions;
-use Noraitec\FilamentFlatpickrPlugin\Components\Concerns\HasTimeOptions;
+use InvalidArgumentException;
 
 class Flatpickr extends Field
 {
-    use HasCallbacks;
-    use HasLimits;
-    use HasLocalization;
-    use HasPositioning;
-    use HasRangeOptions;
-    use HasTimeOptions;
-
     protected string $view = 'filament-flatpickr-plugin::components.flatpickr';
-
     protected string $locale = 'default'; // default = en
     protected array $plugins = [];
-
     protected array $options = [];
 
-    public function options(array $options): static
+    // Set the date for the calendar
+    public function setDate(string $date): static
     {
-        $this->options = $options;
+        $this->options['date'] = $date;
         return $this;
     }
 
+    // Get the selected date
+    public function getDate(): string
+    {
+        return $this->options['date'] ?? '';
+    }
+
+    // Clear the selected date
+    public function clear(): static
+    {
+        $this->options['date'] = null;
+        return $this;
+    }
+
+    // Set the minimum date for the calendar
+    public function setMinDate(string $date): static
+    {
+        $this->options['minDate'] = $date;
+        return $this;
+    }
+
+    // Set the maximum date for the calendar
+    public function setMaxDate(string $date): static
+    {
+        $this->options['maxDate'] = $date;
+        return $this;
+    }
+
+    // Open the calendar
+    public function open(): static
+    {
+        $this->options['open'] = true;
+        return $this;
+    }
+
+    // Close the calendar
+    public function close(): static
+    {
+        $this->options['open'] = false;
+        return $this;
+    }
+
+    // Get all options
     public function getOptions(): array
     {
         return $this->options;
     }
 
+    // Métodos de HasLocalization
     public function locale(string $locale): static
     {
         $this->locale = $locale;
@@ -58,33 +87,15 @@ class Flatpickr extends Field
         return $this->locale;
     }
 
-    public function mode(string $mode): static
+    public function altInput(bool $enabled = true): static
     {
-        $allowed = ['single', 'multiple', 'range', 'time'];
-
-        if (! in_array($mode, $allowed)) {
-            throw new \InvalidArgumentException("Modo inválido: {$mode}. Los permitidos son: " . implode(', ', $allowed));
-        }
-
-        $this->options['mode'] = $mode;
+        $this->options['altInput'] = $enabled;
         return $this;
     }
 
-    public function disableMobile(bool $enabled = true): static
+    public function altFormat(string $format): static
     {
-        $this->options['disableMobile'] = $enabled;
-        return $this;
-    }
-
-    public function disableFunction(string $jsFunction): static
-    {
-        $this->options['disable'] = [$jsFunction];
-        return $this;
-    }
-
-    public function enableFunction(string $jsFunction): static
-    {
-        $this->options['enable'] = [$jsFunction];
+        $this->options['altFormat'] = $format;
         return $this;
     }
 
@@ -94,21 +105,102 @@ class Flatpickr extends Field
         return $this;
     }
 
-    public function conjunction(string $separator): static
+    public function ariaDateFormat(string $format): static
+    {
+        $this->options['ariaDateFormat'] = $format;
+        return $this;
+    }
+
+    public function conjunctionFromLocalization(string $separator): static
     {
         $this->options['conjunction'] = $separator;
         return $this;
     }
+
+    public function shorthandCurrentMonth(bool $enabled = true): static
+    {
+        $this->options['shorthandCurrentMonth'] = $enabled;
+        return $this;
+    }
+
+    public function weekNumbers(bool $enabled = true): static
+    {
+        $this->options['weekNumbers'] = $enabled;
+        return $this;
+    }
+
+    public function monthSelectorType(string $type): static
+    {
+        if (!in_array($type, ['dropdown', 'static'])) {
+            throw new InvalidArgumentException("Invalid monthSelectorType: {$type}. Must be 'dropdown' or 'static'.");
+        }
+        $this->options['monthSelectorType'] = $type;
+        return $this;
+    }
+
+    public function firstDayOfWeek(int $day): static
+    {
+        if ($day < 0 || $day > 6) {
+            throw new InvalidArgumentException("First day of week must be between 0 and 6.");
+        }
+        $this->options['firstDayOfWeek'] = $day;
+        return $this;
+    }
+
+    public function showMonths(int $number): static
+    {
+        if ($number < 1) {
+            throw new InvalidArgumentException("Number of months to show must be at least 1.");
+        }
+        $this->options['showMonths'] = $number;
+        return $this;
+    }
+
+    public function dateFormat(string $format): static
+    {
+        $this->options['dateFormat'] = $format;
+        return $this;
+    }
+
+    // Métodos de HasTimeOptions
+    public function setTime(string $time): static
+    {
+        $this->options['time'] = $time;
+        return $this;
+    }
+
+    public function getTime(): ?string
+    {
+        return $this->options['time'] ?? null;
+    }
+
+    public function setTimeFormat(string $format): static
+    {
+        $validFormats = ['H:i', 'h:i A', 'H:i:s', 'h:i:s A']; // Añade más formatos válidos según Flatpickr
+        if (!in_array($format, $validFormats)) {
+            throw new InvalidArgumentException("Invalid time format: {$format}.");
+        }
+        $this->options['timeFormat'] = $format;
+        return $this;
+    }
+
+    // Configurar opciones arbitrarias para cubrir toda la API de Flatpickr
+    public function config(array $options): static
+    {
+        $this->options = array_merge($this->options, $options);
+        return $this;
+    }
+
+    // Set plugins for the calendar
     public function withPlugins(array $plugins): static
-{
-    $this->plugins = $plugins;
+    {
+        $this->plugins = $plugins;
+        return $this;
+    }
 
-    return $this;
-}
-
-public function getPlugins(): array
-{
-    return $this->plugins;
-}
-
+    // Get the current plugins
+    public function getPlugins(): array
+    {
+        return array_merge(config('filament-flatpickr.plugins', []), $this->plugins);
+    }
 }

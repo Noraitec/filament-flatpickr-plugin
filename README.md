@@ -53,11 +53,23 @@ php artisan vendor:publish --tag=filament-flatpickr-plugin
 
 use Noraitec\FilamentFlatpickrPlugin\Components\Flatpickr;
 
-Flatpickr::make('fecha')
+Flatpickr::make('inicio')
+    ->label('Fecha y hora de inicio')
     ->enableTime()
-    ->dateFormat('Y-m-d H:i')
+    ->enableSeconds()
+    ->allowInput()
+    ->minDate('today')
+    ->maxDate('2025-12-31')
+    ->defaultDate(now()->format('Y-m-d'))
+    ->altInput()
+    ->altFormat('d/m/Y')
+    ->inline(false)
+    ->mode('range')
+    ->weekNumbers()
+    ->disableMobile()
     ->locale('es')
-    ->mode('range');
+    ->timezone('Europe/Madrid')
+
 
     //También se pueden configurar funciones JS:
 

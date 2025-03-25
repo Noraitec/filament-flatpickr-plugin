@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.2.0] - 2025-03-25
+
+### Added
+- Soporte completo para la API de Flatpickr desde PHP mediante métodos encadenables.
+- Nuevos métodos: `minDate()`, `maxDate()`, `defaultDate()`, `altInput()`, `altFormat()`, `weekNumbers()`, `allowInput()`, `inline()`, `disableMobile()`, etc.
+- Hooks de eventos JS: `onChange()`, `onOpen()`, `onClose()`, `onReady()`, `onValueUpdate()`.
+- Soporte para opciones avanzadas como `timezone()`, `locale()`, `plugins()`, `disable()` y `enable()`.
+
+### Improved
+- Refactor del componente Blade para inyectar funciones JavaScript sin comillas.
+- Integración total con configuración global (`config/filament-flatpickr.php`).
+
+
+
 ## [1.0.1] – 2025-03-24
 
 ### Added

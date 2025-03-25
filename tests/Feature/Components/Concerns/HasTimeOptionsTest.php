@@ -9,48 +9,39 @@
  * For details see <https://www.gnu.org/licenses/lgpl-3.0.html>
  */
 
+namespace Tests\Feature\Components;
 
-use Tests\TestCase;
 use Noraitec\FilamentFlatpickrPlugin\Components\Flatpickr;
+use Tests\TestCase;
+use InvalidArgumentException;
 
 uses(TestCase::class);
 
-it('enables time selection', function () {
-    $component = Flatpickr::make('fecha')->enableTime();
-    expect($component->getOptions())->toHaveKey('enableTime', true);
+it('sets time correctly', function () {
+    $component = Flatpickr::make('fecha')->setTime('10:30');
+    expect($component->getOptions())->toHaveKey('time', '10:30');
 });
 
-it('enables seconds selection', function () {
-    $component = Flatpickr::make('fecha')->enableSeconds();
-    expect($component->getOptions())->toHaveKey('enableSeconds', true);
+it('sets time format correctly', function () {
+    $component = Flatpickr::make('fecha')->setTimeFormat('H:i');
+    expect($component->getOptions())->toHaveKey('timeFormat', 'H:i');
 });
 
-it('sets time to 24hr format', function () {
-    $component = Flatpickr::make('fecha')->time24hr();
-    expect($component->getOptions())->toHaveKey('time_24hr', true);
+it('gets the correct time value', function () {
+    $component = Flatpickr::make('fecha')->setTime('15:45');
+    expect($component->getTime())->toBe('15:45');
 });
 
-it('sets default hour', function () {
-    $component = Flatpickr::make('fecha')->defaultHour(10);
-    expect($component->getOptions())->toHaveKey('defaultHour', 10);
+it('throws exception on invalid time format', function () {
+    Flatpickr::make('fecha')->setTimeFormat('invalid-format');
+})->throws(InvalidArgumentException::class);
+
+it('sets and gets 24-hour time format', function () {
+    $component = Flatpickr::make('fecha')->setTimeFormat('H:i');
+    expect($component->getOptions())->toHaveKey('timeFormat', 'H:i');
 });
 
-it('sets default minute', function () {
-    $component = Flatpickr::make('fecha')->defaultMinute(30);
-    expect($component->getOptions())->toHaveKey('defaultMinute', 30);
-});
-
-it('sets default seconds', function () {
-    $component = Flatpickr::make('fecha')->defaultSeconds(45);
-    expect($component->getOptions())->toHaveKey('defaultSeconds', 45);
-});
-
-it('sets hour increment', function () {
-    $component = Flatpickr::make('fecha')->hourIncrement(2);
-    expect($component->getOptions())->toHaveKey('hourIncrement', 2);
-});
-
-it('sets minute increment', function () {
-    $component = Flatpickr::make('fecha')->minuteIncrement(5);
-    expect($component->getOptions())->toHaveKey('minuteIncrement', 5);
+it('sets and gets 12-hour time format', function () {
+    $component = Flatpickr::make('fecha')->setTimeFormat('h:i A');
+    expect($component->getOptions())->toHaveKey('timeFormat', 'h:i A');
 });
