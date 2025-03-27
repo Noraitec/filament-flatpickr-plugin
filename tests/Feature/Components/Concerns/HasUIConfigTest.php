@@ -41,7 +41,8 @@ it('does not throw exception for valid showMonths', function () {
 it('throws exception for invalid showMonths', function () {
     try {
         Flatpickr::make('fecha')->showMonths(0);
-        $this->fail('Expected InvalidArgumentException was not thrown');
+        // Si no lanza excepción, forzamos fallo
+        expect()->fail('Expected InvalidArgumentException was not thrown.');
     } catch (\InvalidArgumentException $e) {
         expect($e->getMessage())->toBe('Number of months to show must be at least 1.');
     }

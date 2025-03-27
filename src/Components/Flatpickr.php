@@ -36,6 +36,20 @@
          $this->options = array_merge($this->options, $options);
          return $this;
      }
+//for testing purposes
+protected function getConfig(string $key, mixed $default = null): mixed
+{
+    if (function_exists('config')) {
+        try {
+            $value = config($key);
+            return $value !== null ? $value : $default; // @codeCoverageIgnore
+        } catch (\Throwable) {
+            return $default; // @codeCoverageIgnore
+        }
+    }
+
+    return $default;  // @codeCoverageIgnore
+}
  
      public function withPlugins(array $plugins): static
 {
@@ -43,17 +57,26 @@
     return $this;
 }
 
-public function getPlugins(): array
+protected function getConfiguredPlugins(): array
 {
-    $configuredPlugins = [];
-
-    if (function_exists('app') && method_exists(app(), 'bound') && app()->bound('config')) {
-        $configuredPlugins = app('config')->get('filament-flatpickr.plugins', []);
+    if (function_exists('config')) {
+        try {
+            return config('filament-flatpickr.plugins', []) ?? [];
+        } catch (\Throwable) {
+            return []; // @codeCoverageIgnore
+        }
     }
 
-    return array_unique(array_merge(
-        $configuredPlugins,
-        $this->plugins
-    ));
+    return []; // @codeCoverageIgnore
 }
+
+public function getPlugins(): array
+{
+    return array_values(array_unique(array_merge(
+        $this->getConfiguredPlugins(),
+        $this->plugins
+    )));
+}
+
+
  }

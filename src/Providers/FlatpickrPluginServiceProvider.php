@@ -9,7 +9,7 @@ class FlatpickrPluginServiceProvider extends PackageServiceProvider
     {
         $package
             ->name('filament-flatpickr')
-            ->hasConfigFile()
+            ->hasConfigFile('filament-flatpickr')
             ->hasViews('filament-flatpickr-plugin');
     }
 }

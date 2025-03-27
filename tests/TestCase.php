@@ -13,6 +13,11 @@ abstract class TestCase extends Orchestra
     protected function setUp(): void
     {
         parent::setUp();
+        if (!function_exists('config')) {
+            function config($key = null, $default = null) {
+                return app('config')->get($key, $default);
+            }
+        }
     }
 
     protected function getPackageProviders($app): array
@@ -28,12 +33,13 @@ abstract class TestCase extends Orchestra
     protected function defineEnvironment($app): void
     {
         $app['view']->addNamespace('filament-flatpickr-plugin', __DIR__ . '/../resources/views');
+   
     }
 
     protected function getEnvironmentSetUp($app): void
     {
         $app['config']->set('filament-flatpickr', [
-            'plugins' => [],
+            'plugins' => ['a', 'b'],
         ]);
     }
 }
