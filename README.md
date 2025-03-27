@@ -36,7 +36,7 @@ composer require noraitec/filament-flatpickr-plugin
 
 ```
 
-Opcionalmente, publica los assets si es necesario:
+## 🔧 Comandos disponibles
 
 ```bash
 php artisan vendor:publish --tag=filament-flatpickr-plugin
@@ -44,8 +44,6 @@ php artisan vendor:publish --tag=filament-flatpickr-plugin
 ```
 
 ## 🛠️ Uso
-
-
 
 
 
