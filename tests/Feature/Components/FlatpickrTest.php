@@ -11,6 +11,8 @@
 use Noraitec\FilamentFlatpickrPlugin\Components\Flatpickr;
 use Tests\TestCase;
 
+uses(TestCase::class);
+
 it('configures options correctly', function () {
     $component = Flatpickr::make('fecha')->config(['inline' => true, 'weekNumbers' => true]);
     $options = $component->getOptions();
@@ -24,10 +26,13 @@ it('adds plugins correctly', function () {
     expect($plugins)->toContain('rangePlugin');
 });
 
+
 it('merges plugins with config', function () {
-    $this->app['config']->set('filament-flatpickr.plugins', ['confirmDate']);
+    config()->set('filament-flatpickr.plugins', ['confirmDate']);
+
     $component = Flatpickr::make('fecha')->withPlugins(['rangePlugin']);
     $plugins = $component->getPlugins();
+
     expect($plugins)->toContain('confirmDate');
     expect($plugins)->toContain('rangePlugin');
 });

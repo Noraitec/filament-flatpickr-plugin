@@ -37,13 +37,21 @@
      }
  
      public function withPlugins(array $plugins): static
-     {
-         $this->plugins = $plugins;
-         return $this;
-     }
- 
-     public function getPlugins(): array
-     {
-         return array_merge(config('filament-flatpickr.plugins', []), $this->plugins);
-     }
+{
+    $this->plugins = $plugins; // No accedemos a config aquí
+    return $this;
+}
+
+public function getPlugins(): array
+{
+    $configuredPlugins = [];
+
+    if (function_exists('config') && app()->bound('config')) {
+        $configuredPlugins = config('filament-flatpickr.plugins', []);
+    }
+    return array_unique(array_merge(
+        $configuredPlugins,
+        $this->plugins
+    ));
+}
  }
