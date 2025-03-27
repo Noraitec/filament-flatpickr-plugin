@@ -11,6 +11,8 @@
 
  use Noraitec\FilamentFlatpickrPlugin\Components\Flatpickr;
  use Tests\TestCase;
+
+ uses(TestCase::class);
  
  it('enables time selection', function () {
      $component = Flatpickr::make('fecha')->enableTime(true);

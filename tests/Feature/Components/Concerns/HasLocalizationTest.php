@@ -11,6 +11,8 @@
 
  use Noraitec\FilamentFlatpickrPlugin\Components\Flatpickr;
  use Tests\TestCase;
+
+ uses(TestCase::class);
  
  it('sets locale correctly', function () {
      $component = Flatpickr::make('fecha')->locale('es');

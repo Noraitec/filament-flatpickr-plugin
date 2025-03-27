@@ -2,6 +2,7 @@
 
 use Noraitec\FilamentFlatpickrPlugin\Components\Flatpickr;
 use Tests\TestCase;
+uses(TestCase::class);
 
 it('sets minDate correctly', function () {
     $component = Flatpickr::make('fecha')->minDate('2023-01-01');

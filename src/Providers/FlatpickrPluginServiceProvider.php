@@ -1,7 +1,5 @@
 <?php
-
 namespace Noraitec\FilamentFlatpickrPlugin\Providers;
-
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
@@ -11,7 +9,7 @@ class FlatpickrPluginServiceProvider extends PackageServiceProvider
     {
         $package
             ->name('filament-flatpickr')
-            ->hasConfigFile() // esto busca config/filament-flatpickr.php
+            ->hasConfigFile()
             ->hasViews('filament-flatpickr-plugin');
     }
 }

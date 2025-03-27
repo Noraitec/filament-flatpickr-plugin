@@ -10,9 +10,9 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "Tests\\": "tests/",
-      "Noraitec\\FilamentFlatpickrPlugin\\": "src/"
+      "Tests\\": "tests/" 
     }
+    
   },
   "authors": [
     {

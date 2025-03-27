@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of the Noraitec Filament Flatpickr Plugin.
  *
@@ -46,9 +47,10 @@ public function getPlugins(): array
 {
     $configuredPlugins = [];
 
-    if (function_exists('config') && app()->bound('config')) {
-        $configuredPlugins = config('filament-flatpickr.plugins', []);
+    if (function_exists('app') && method_exists(app(), 'bound') && app()->bound('config')) {
+        $configuredPlugins = app('config')->get('filament-flatpickr.plugins', []);
     }
+
     return array_unique(array_merge(
         $configuredPlugins,
         $this->plugins
