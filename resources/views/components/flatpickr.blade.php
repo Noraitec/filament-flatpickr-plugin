@@ -1,5 +1,5 @@
 @php
-    $config = $getFlatpickrConfig();
+   $config = $field->getOptions();
     $rawKeys = ['onChange', 'onOpen', 'onClose', 'onReady', 'onValueUpdate'];
     $jsOptions = '{' . collect($config)->map(function ($value, $key) use ($rawKeys) {
         if (in_array($key, $rawKeys)) {
