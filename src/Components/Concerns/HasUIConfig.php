@@ -8,26 +8,28 @@
  * that is bundled with this source code in the LICENSE file.
  * For details see <https://www.gnu.org/licenses/lgpl-3.0.html>
  */
-
 namespace Noraitec\FilamentFlatpickrPlugin\Components\Concerns;
 
-trait HasTimeOptions
+trait HasUIConfig
 {
-    public function enableTime(bool $enabled = true): static
+    public function inline(bool $enabled = true): static
     {
-        $this->options['enableTime'] = $enabled;
+        $this->options['inline'] = $enabled;
         return $this;
     }
 
-    public function time24hr(bool $enabled = true): static
+    public function weekNumbers(bool $enabled = true): static
     {
-        $this->options['time_24hr'] = $enabled;
+        $this->options['weekNumbers'] = $enabled;
         return $this;
     }
 
-    public function defaultHour(int $hour): static
+    public function showMonths(int $number): static
     {
-        $this->options['defaultHour'] = $hour;
+        if ($number < 1) {
+            throw new \InvalidArgumentException("Number of months to show must be at least 1.");
+        }
+        $this->options['showMonths'] = $number;
         return $this;
     }
 }

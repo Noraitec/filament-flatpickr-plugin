@@ -8,26 +8,25 @@
  * that is bundled with this source code in the LICENSE file.
  * For details see <https://www.gnu.org/licenses/lgpl-3.0.html>
  */
-
 namespace Noraitec\FilamentFlatpickrPlugin\Components\Concerns;
 
-trait HasTimeOptions
+trait HasDateOptions
 {
-    public function enableTime(bool $enabled = true): static
+    public function minDate(string $date): static
     {
-        $this->options['enableTime'] = $enabled;
+        $this->options['minDate'] = $date;
         return $this;
     }
 
-    public function time24hr(bool $enabled = true): static
+    public function maxDate(string $date): static
     {
-        $this->options['time_24hr'] = $enabled;
+        $this->options['maxDate'] = $date;
         return $this;
     }
 
-    public function defaultHour(int $hour): static
+    public function defaultDate(string $date): static
     {
-        $this->options['defaultHour'] = $hour;
+        $this->options['defaultDate'] = $date;
         return $this;
     }
 }

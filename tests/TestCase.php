@@ -3,15 +3,16 @@
 namespace Tests;
 
 use Orchestra\Testbench\TestCase as Orchestra;
-use Noraitec\FilamentFlatpickrPlugin\FlatpickrPluginServiceProvider;
+
 use Filament\Forms\FormsServiceProvider;
+use Noraitec\FilamentFlatpickrPlugin\Providers\FlatpickrPluginServiceProvider;
 
 abstract class TestCase extends Orchestra
 {
     protected function getPackageProviders($app)
     {
         return [
-           FlatpickrPluginServiceProvider::class,
+            FlatpickrPluginServiceProvider::class,
             FormsServiceProvider::class,
             \Filament\FilamentServiceProvider::class,
             \Livewire\LivewireServiceProvider::class,
@@ -38,22 +39,30 @@ abstract class TestCase extends Orchestra
             base_path('vendor/filament/forms/resources/views')
         );
     
-        // 🆕 Registrar componentes Blade (por si acaso)
+        // Registrar componentes Blade (por si acaso)
         $app['view']->addNamespace(
             'filament-support',
             base_path('vendor/filament/support/resources/views')
         );
     
-        // 🆕 Agregar la carpeta shared
+        // Agregar la carpeta shared
         $app['view']->addNamespace(
             'filament::components',
             base_path('vendor/filament/support/resources/views/components')
         );
     
-        // 🆕 Registrar rutas necesarias para los componentes blade compartidos
+        // Registrar rutas necesarias para los componentes blade compartidos
         $app['view']->addNamespace(
             'filament-forms::components',
             base_path('vendor/filament/forms/resources/views/components')
         );
+    }
+
+    protected function getEnvironmentSetUp($app)
+    {
+        // Establecer la configuración predeterminada para filament-flatpickr
+        $app['config']->set('filament-flatpickr', [
+            'plugins' => [],
+        ]);
     }
 }

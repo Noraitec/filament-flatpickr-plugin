@@ -8,84 +8,64 @@
  * that is bundled with this source code in the LICENSE file.
  * For details see <https://www.gnu.org/licenses/lgpl-3.0.html>
  */
-
-namespace Tests\Feature\Components;
-
 use Noraitec\FilamentFlatpickrPlugin\Components\Flatpickr;
 use Tests\TestCase;
-use InvalidArgumentException;
 
-uses(TestCase::class);
-
-it('sets and gets date correctly', function () {
-    $component = Flatpickr::make('fecha')->setDate('2024-01-01');
-    expect($component->getDate())->toBe('2024-01-01');
+it('configures options correctly', function () {
+    $component = Flatpickr::make('fecha')->config(['inline' => true, 'weekNumbers' => true]);
+    $options = $component->getOptions();
+    expect($options['inline'])->toBeTrue();
+    expect($options['weekNumbers'])->toBeTrue();
 });
 
-it('sets and gets minDate correctly', function () {
-    $component = Flatpickr::make('fecha')->setMinDate('2024-01-01');
-    expect($component->getOptions())->toHaveKey('minDate', '2024-01-01');
+it('adds plugins correctly', function () {
+    $component = Flatpickr::make('fecha')->withPlugins(['rangePlugin']);
+    $plugins = $component->getPlugins();
+    expect($plugins)->toContain('rangePlugin');
 });
 
-it('sets and gets maxDate correctly', function () {
-    $component = Flatpickr::make('fecha')->setMaxDate('2024-12-31');
-    expect($component->getOptions())->toHaveKey('maxDate', '2024-12-31');
+it('merges plugins with config', function () {
+    $this->app['config']->set('filament-flatpickr.plugins', ['confirmDate']);
+    $component = Flatpickr::make('fecha')->withPlugins(['rangePlugin']);
+    $plugins = $component->getPlugins();
+    expect($plugins)->toContain('confirmDate');
+    expect($plugins)->toContain('rangePlugin');
 });
 
-it('opens and closes calendar correctly', function () {
-    $component = Flatpickr::make('fecha');
-    $component->open();
-    expect($component->getOptions())->toHaveKey('open', true);
-    
-    $component->close();
-    expect($component->getOptions())->toHaveKey('open', false);
+it('sets and gets locale', function () {
+    $component = Flatpickr::make('fecha')->locale('fr');
+    expect($component->getLocale())->toBe('fr');
 });
 
-it('sets valid month selector type', function () {
-    $component = Flatpickr::make('fecha')->monthSelectorType('dropdown');
-    expect($component->getOptions())->toHaveKey('monthSelectorType', 'dropdown');
+it('sets time options', function () {
+    $component = Flatpickr::make('fecha')
+        ->enableTime(true)
+        ->time24hr(false)
+        ->defaultHour(10);
+    $options = $component->getOptions();
+    expect($options['enableTime'])->toBeTrue();
+    expect($options['time_24hr'])->toBeFalse();
+    expect($options['defaultHour'])->toBe(10);
 });
 
-it('throws exception on invalid month selector type', function () {
-    Flatpickr::make('fecha')->monthSelectorType('invalid');
-})->throws(InvalidArgumentException::class);
-
-it('sets alt input class', function () {
-    $component = Flatpickr::make('fecha')->altInputClass('custom-class');
-    expect($component->getOptions())->toHaveKey('altInputClass', 'custom-class');
+it('sets date options', function () {
+    $component = Flatpickr::make('fecha')
+        ->minDate('2023-01-01')
+        ->maxDate('2023-12-31')
+        ->defaultDate('2023-06-15');
+    $options = $component->getOptions();
+    expect($options['minDate'])->toBe('2023-01-01');
+    expect($options['maxDate'])->toBe('2023-12-31');
+    expect($options['defaultDate'])->toBe('2023-06-15');
 });
 
-it('sets conjunction separator', function () {
-    $component = Flatpickr::make('fecha')->conjunctionFromLocalization(' y ');
-    expect($component->getOptions())->toHaveKey('conjunction', ' y ');
-});
-
-it('sets aria date format', function () {
-    $component = Flatpickr::make('fecha')->ariaDateFormat('Y-m-d');
-    expect($component->getOptions())->toHaveKey('ariaDateFormat', 'Y-m-d');
-});
-
-it('sets shorthand current month', function () {
-    $component = Flatpickr::make('fecha')->shorthandCurrentMonth();
-    expect($component->getOptions())->toHaveKey('shorthandCurrentMonth', true);
-});
-
-it('enables week numbers', function () {
-    $component = Flatpickr::make('fecha')->weekNumbers();
-    expect($component->getOptions())->toHaveKey('weekNumbers', true);
-});
-
-it('sets valid time options', function () {
-    $component = Flatpickr::make('fecha')->setTime('10:30');
-    expect($component->getOptions())->toHaveKey('time', '10:30');
-});
-
-it('sets valid date format', function () {
-    $component = Flatpickr::make('fecha')->dateFormat('Y-m-d');
-    expect($component->getOptions())->toHaveKey('dateFormat', 'Y-m-d');
-});
-
-it('sets valid locale', function () {
-    $component = Flatpickr::make('fecha')->locale('es');
-    expect($component->getLocale())->toBe('es');
+it('sets UI config options', function () {
+    $component = Flatpickr::make('fecha')
+        ->inline(true)
+        ->weekNumbers(true)
+        ->showMonths(3);
+    $options = $component->getOptions();
+    expect($options['inline'])->toBeTrue();
+    expect($options['weekNumbers'])->toBeTrue();
+    expect($options['showMonths'])->toBe(3);
 });
