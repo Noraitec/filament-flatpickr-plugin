@@ -12,11 +12,13 @@ class FlatpickrPluginServiceProvider extends PackageServiceProvider
         ->name('filament-flatpickr-plugin')
         ->hasConfigFile('filament-flatpickr')
         ->hasViews('filament-flatpickr-plugin')
+        ->hasAssets()
         ->hasInstallCommand(function (InstallCommand $command) {
             $command
                 ->publishConfigFile()
                 ->publishAssets() 
                 ->askToStarRepoOnGitHub('noraitec/filament-flatpickr-plugin');
+                
         });
     }
 }

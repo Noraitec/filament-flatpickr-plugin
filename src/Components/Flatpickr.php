@@ -30,6 +30,22 @@
      {
          return $this->options;
      }
+     public static function getAssets(): array
+{
+    $mode = config('filament-flatpickr.assets', 'cdn');
+
+    if ($mode === 'cdn') {
+        return [
+            'https://cdn.jsdelivr.net/npm/flatpickr',
+            'https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css',
+        ];
+    }
+
+    return [
+        asset('vendor/filament-flatpickr-plugin/flatpickr.js'),
+        asset('vendor/filament-flatpickr-plugin/flatpickr.css'),
+    ];
+}
  
      public function config(array $options): static
      {
