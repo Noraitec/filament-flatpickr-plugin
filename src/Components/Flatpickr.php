@@ -22,7 +22,7 @@
  {
      use HasLocalization, HasTimeOptions, HasDateOptions, HasUIConfig;
  
-     protected string $view = 'filament-flatpickr-plugin::components.flatpickr';
+     protected string $view = 'filament-flatpickr::components.flatpickr';
      protected array $options = [];
      protected array $plugins = [];
  

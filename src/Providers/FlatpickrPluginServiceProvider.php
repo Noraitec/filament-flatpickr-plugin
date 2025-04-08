@@ -14,7 +14,7 @@ class FlatpickrPluginServiceProvider extends PackageServiceProvider
     public function configurePackage(Package $package): void
     {
         $package
-            ->name('filament-flatpickr') // Este define el nombre del config: config/filament-flatpickr.php
+            ->name('filament-flatpickr')   
             ->hasConfigFile()
             ->hasViews()
             ->hasViewComponents('filament-flatpickr-plugin');
