@@ -7,6 +7,7 @@
  * This source file is subject to the GNU Lesser General Public License (LGPL-3.0)
  * that is bundled with this source code in the LICENSE file.
  * For details see <https://www.gnu.org/licenses/lgpl-3.0.html>
+ * file: filament-flatpickr-plugin.php
  */
 return [
 
@@ -44,7 +45,7 @@ return [
     |
     */
 
-    'timezone' => null,
+    'timezone' => 'Europe/Madrid',
 
     /*
     |--------------------------------------------------------------------------
@@ -56,7 +57,10 @@ return [
     |
     */
 
-    'plugins' => [],
+    'plugins' => [
+        'confirmDate',
+        'rangePlugin',
+    ],
 
     /*
     |--------------------------------------------------------------------------
@@ -70,7 +74,7 @@ return [
 
     'default_options' => [
         'allowInput' => true,
-        'dateFormat' => 'Y-m-d',
+        'dateFormat' => 'd-m-Y',
         'enableTime' => false,
         'time_24hr' => true,
     ],
