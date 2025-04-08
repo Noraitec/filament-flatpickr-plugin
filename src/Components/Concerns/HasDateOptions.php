@@ -29,4 +29,5 @@ trait HasDateOptions
         $this->options['defaultDate'] = $date;
         return $this;
     }
+    
 }
