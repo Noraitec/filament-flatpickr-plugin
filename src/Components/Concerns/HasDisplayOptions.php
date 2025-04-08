@@ -4,10 +4,6 @@ namespace Noraitec\FilamentFlatpickrPlugin\Components\Concerns;
 
 trait HasDisplayOptions
 {
-    public function altInput(bool $state = true): static
-    {
-        return $this->config(['altInput' => $state]);
-    }
 
     public function altFormat(string $format): static
     {
