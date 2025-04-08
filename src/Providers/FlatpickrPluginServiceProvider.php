@@ -24,8 +24,8 @@ class FlatpickrPluginServiceProvider extends PackageServiceProvider
     {
         // Publicar assets
         $this->publishes([
-            __DIR__ . '/../../resources/flatpickr' => public_path('vendor/filament-flatpickr-plugin'),
-        ], 'filament-flatpickr-plugin-assets');
+            __DIR__ . '/../../resources/flatpickr' => public_path('vendor/filament-flatpickr'),
+        ], 'filament-flatpickr-assets');
 
         // Publicar config
         $this->publishes([
@@ -34,7 +34,7 @@ class FlatpickrPluginServiceProvider extends PackageServiceProvider
 
         // Cargar assets dependiendo de la configuración
         if (!config('filament-flatpickr.use_cdn', true)) {
-            $base = asset('vendor/filament-flatpickr-plugin');
+            $base = asset('vendor/filament-flatpickr');
 
             $assets = [
                 Css::make('flatpickr-css', "$base/flatpickr.min.css"),
