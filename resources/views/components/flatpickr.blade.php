@@ -1,10 +1,12 @@
 @php
-   $config = $field->getOptions();
+    $config = $field->getOptions();
     $rawKeys = ['onChange', 'onOpen', 'onClose', 'onReady', 'onValueUpdate'];
+
     $jsOptions = '{' . collect($config)->map(function ($value, $key) use ($rawKeys) {
         if (in_array($key, $rawKeys)) {
             return "$key: $value";
         }
+
         return "$key: " . json_encode($value);
     })->join(', ') . '}';
 @endphp
