@@ -14,15 +14,15 @@ class FlatpickrPluginServiceProvider extends PackageServiceProvider
     public function configurePackage(Package $package): void
     {
         $package
-            ->name('filament-flatpickr')   
+            ->name('filament-flatpickr') // esto define el config y views hint
             ->hasConfigFile()
             ->hasViews()
-            ->hasViewComponents('filament-flatpickr-plugin');
+            ->hasViewComponents('filament-flatpickr');
     }
 
     public function packageBooted(): void
     {
-        // Publicar assets
+        // Publicar assets al path correcto
         $this->publishes([
             __DIR__ . '/../../resources/flatpickr' => public_path('vendor/filament-flatpickr'),
         ], 'filament-flatpickr-assets');
@@ -30,9 +30,9 @@ class FlatpickrPluginServiceProvider extends PackageServiceProvider
         // Publicar config
         $this->publishes([
             __DIR__ . '/../../config/filament-flatpickr.php' => config_path('filament-flatpickr.php'),
-        ], 'filament-flatpickr-plugin-config');
+        ], 'filament-flatpickr-config');
 
-        // Cargar assets dependiendo de la configuración
+        // Cargar assets
         if (!config('filament-flatpickr.use_cdn', true)) {
             $base = asset('vendor/filament-flatpickr');
 
@@ -47,37 +47,33 @@ class FlatpickrPluginServiceProvider extends PackageServiceProvider
                 $assets[] = Js::make("flatpickr-locale", "$base/l10n/{$locale}.js");
             }
 
-            // Plugins
+            // Plugins (carpeta o archivo suelto)
             $plugins = config('filament-flatpickr.plugins', []);
             if (!is_array($plugins)) {
                 $plugins = [];
             }
 
             foreach ($plugins as $plugin) {
-                $pluginDir = public_path("vendor/filament-flatpickr-plugin/plugins/$plugin");
-
-                // Caso: plugin como carpeta (e.g., plugins/confirmDate/confirmDate.js)
-                if (file_exists("$pluginDir/$plugin.js")) {
-                    $assets[] = Js::make("flatpickr-plugin-$plugin", "$base/plugins/$plugin/$plugin.js");
+                // plugin con carpeta propia
+                if (file_exists(public_path("vendor/filament-flatpickr/plugins/{$plugin}/{$plugin}.js"))) {
+                    $assets[] = Js::make("flatpickr-plugin-$plugin", "$base/plugins/{$plugin}/{$plugin}.js");
+                }
+                if (file_exists(public_path("vendor/filament-flatpickr/plugins/{$plugin}/{$plugin}.css"))) {
+                    $assets[] = Css::make("flatpickr-plugin-$plugin", "$base/plugins/{$plugin}/{$plugin}.css");
                 }
 
-                if (file_exists("$pluginDir/$plugin.css")) {
-                    $assets[] = Css::make("flatpickr-plugin-$plugin", "$base/plugins/$plugin/$plugin.css");
+                // plugin como archivo suelto
+                if (file_exists(public_path("vendor/filament-flatpickr/plugins/{$plugin}.js"))) {
+                    $assets[] = Js::make("flatpickr-plugin-$plugin", "$base/plugins/{$plugin}.js");
                 }
-
-                // Caso: plugin como archivo suelto (e.g., plugins/rangePlugin.js)
-                if (file_exists(public_path("vendor/filament-flatpickr-plugin/plugins/$plugin.js"))) {
-                    $assets[] = Js::make("flatpickr-plugin-$plugin", "$base/plugins/$plugin.js");
-                }
-
-                if (file_exists(public_path("vendor/filament-flatpickr-plugin/plugins/$plugin.css"))) {
-                    $assets[] = Css::make("flatpickr-plugin-$plugin", "$base/plugins/$plugin.css");
+                if (file_exists(public_path("vendor/filament-flatpickr/plugins/{$plugin}.css"))) {
+                    $assets[] = Css::make("flatpickr-plugin-$plugin", "$base/plugins/{$plugin}.css");
                 }
             }
 
             FilamentAsset::register($assets);
         } else {
-            // Cargar desde CDN
+            // CDN
             $cdn = config('filament-flatpickr.cdn_url', 'https://cdn.jsdelivr.net/npm/flatpickr');
 
             FilamentAsset::register([

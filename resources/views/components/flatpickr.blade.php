@@ -13,16 +13,7 @@
     :component="$getFieldWrapperView()"
     :field="$field"
 >
-{{-- Assets de Flatpickr --}}
-@once
-    @if(config('filament-flatpickr.use_cdn', true))
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-        <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    @else
-        <link rel="stylesheet" href="{{ asset('vendor/filament-flatpickr/flatpickr.min.css') }}">
-        <script src="{{ asset('vendor/filament-flatpickr/flatpickr.min.js') }}"></script>
-    @endif
-@endonce
+
     <div
         x-data="{}"
         x-init="flatpickr($refs.input, {!! $jsOptions !!})"
