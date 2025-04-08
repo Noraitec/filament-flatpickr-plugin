@@ -19,14 +19,13 @@ class FlatpickrPluginServiceProvider extends PackageServiceProvider
             ->hasConfigFile()
             ->hasViews()
             ->hasViewComponents('filament-flatpickr-plugin');
-            // 👇 NO INCLUIMOS ->hasAssets() porque no usas /resources/dist
     }
 
     public function packageBooted(): void
     {
         // Publicación manual de assets
         $this->publishes([
-            __DIR__ . '/../../resources/assets' => public_path('vendor/filament-flatpickr-plugin'),
+            __DIR__ . '/../../resources/flatpickr' => public_path('vendor/filament-flatpickr-plugin'),
         ], 'filament-flatpickr-plugin-assets');
 
         // Publicación de config
