@@ -14,7 +14,7 @@ class FlatpickrPluginServiceProvider extends PackageServiceProvider
     public function configurePackage(Package $package): void
     {
         $package
-            ->name('filament-flatpickr') // esto define el config y views hint
+            ->name('filament-flatpickr')
             ->hasConfigFile()
             ->hasViews()
             ->hasViewComponents('filament-flatpickr');
@@ -25,12 +25,8 @@ class FlatpickrPluginServiceProvider extends PackageServiceProvider
         // Publicar assets al path correcto
         $this->publishes([
             __DIR__ . '/../../resources/flatpickr' => public_path('vendor/filament-flatpickr'),
+            __DIR__ . '/../../resources/js' => public_path('vendor/filament-flatpickr'),
         ], 'filament-flatpickr-assets');
-
-        // Publicar config
-        $this->publishes([
-            __DIR__ . '/../../config/filament-flatpickr.php' => config_path('filament-flatpickr.php'),
-        ], 'filament-flatpickr-config');
 
         // Cargar assets
         if (!config('filament-flatpickr.use_cdn', true)) {
@@ -39,37 +35,28 @@ class FlatpickrPluginServiceProvider extends PackageServiceProvider
             $assets = [
                 Css::make('flatpickr-css', "$base/flatpickr.min.css"),
                 Js::make('flatpickr-js', "$base/flatpickr.min.js")->module(false),
-                Js::make('flatpickr-js', "$base/flatpickr.min.js")->module(false),
-                
+                Js::make('flatpickr-init', "$base/flatpickr-init.js")->module(false),
             ];
 
             // Idioma
             $locale = config('filament-flatpickr.default_locale', 'en');
             if ($locale) {
-                $assets[] = Js::make("flatpickr-locale", "$base/l10n/$locale.js");
+                $localePath = "$base/l10n/$locale.js";
+                if (file_exists(public_path("vendor/filament-flatpickr/l10n/$locale.js"))) {
+                    $assets[] = Js::make("flatpickr-locale", $localePath)->module(false);
+                }
             }
 
-            // Plugins (carpeta o archivo suelto)
-            $plugins = config('filament-flatpickr.plugins', []);
-            if (!is_array($plugins)) {
-                $plugins = [];
-            }
-
+            // Plugins
+            $plugins = is_array(config('filament-flatpickr.plugins')) 
+    ? config('filament-flatpickr.plugins') 
+    : [];
             foreach ($plugins as $plugin) {
-                // plugin con carpeta propia
                 if (file_exists(public_path("vendor/filament-flatpickr/plugins/{$plugin}/{$plugin}.js"))) {
-                    $assets[] = Js::make("flatpickr-plugin-$plugin", "$base/plugins/{$plugin}/{$plugin}.js");
+                    $assets[] = Js::make("flatpickr-plugin-$plugin", "$base/plugins/{$plugin}/{$plugin}.js")->module(false);
                 }
                 if (file_exists(public_path("vendor/filament-flatpickr/plugins/{$plugin}/{$plugin}.css"))) {
                     $assets[] = Css::make("flatpickr-plugin-$plugin", "$base/plugins/{$plugin}/{$plugin}.css");
-                }
-
-                // plugin como archivo suelto
-                if (file_exists(public_path("vendor/filament-flatpickr/plugins/{$plugin}.js"))) {
-                    $assets[] = Js::make("flatpickr-plugin-$plugin", "$base/plugins/{$plugin}.js");
-                }
-                if (file_exists(public_path("vendor/filament-flatpickr/plugins/{$plugin}.css"))) {
-                    $assets[] = Css::make("flatpickr-plugin-$plugin", "$base/plugins/{$plugin}.css");
                 }
             }
 
@@ -84,6 +71,7 @@ class FlatpickrPluginServiceProvider extends PackageServiceProvider
 
             FilamentView::registerRenderHook('scripts.end', fn () => <<<HTML
                 <script src="$cdn"></script>
+                <script src="$cdn/dist/l10n/{config('filament-flatpickr.default_locale', 'en')}.js"></script>
             HTML);
         }
     }

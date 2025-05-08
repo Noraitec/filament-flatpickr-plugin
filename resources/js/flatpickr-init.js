@@ -1,5 +1,6 @@
 document.addEventListener("alpine:init", () => {
     Alpine.data("flatpickrComponent", (options) => ({
+        picker: null,
         init() {
             const defaultOptions = {
                 locale: 'en',
@@ -8,6 +9,7 @@ document.addEventListener("alpine:init", () => {
                 altFormat: 'F j, Y',
             };
 
+            // Mezclar opciones por defecto con las del campo
             const config = {
                 ...defaultOptions,
                 ...options,
@@ -18,22 +20,25 @@ document.addEventListener("alpine:init", () => {
                 onValueUpdate: this.wrapCallback(options.onValueUpdate),
             };
 
-            // Initialize Flatpickr
+            // Inicializar Flatpickr
             this.picker = flatpickr(this.$refs.input, config);
         },
         wrapCallback(callback) {
             if (typeof callback === "string") {
                 try {
+                    // Convertir el callback string en una función
                     return new Function("selectedDates", "dateStr", "instance", callback);
                 } catch (e) {
-                    console.error("Invalid callback function:", e);
+                    console.error("Error al procesar el callback:", e);
                 }
             }
             return callback;
         },
         refresh() {
-            this.picker.destroy();
-            this.init();
+            if (this.picker) {
+                this.picker.destroy();
+                this.init();
+            }
         }
     }));
 });
