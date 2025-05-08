@@ -39,6 +39,8 @@ class FlatpickrPluginServiceProvider extends PackageServiceProvider
             $assets = [
                 Css::make('flatpickr-css', "$base/flatpickr.min.css"),
                 Js::make('flatpickr-js', "$base/flatpickr.min.js")->module(false),
+                Js::make('flatpickr-js', "$base/flatpickr.min.js")->module(false),
+                
             ];
 
             // Idioma

@@ -1,30 +1,5 @@
 @php
     $config = $field->getOptions();
-    $rawKeys = ['onChange', 'onOpen', 'onClose', 'onReady', 'onValueUpdate'];
-
-    // Aseguramos que siempre se incluya el locale
-    if (!isset($config['locale'])) {
-        $config['locale'] = config('filament-flatpickr.default_locale', 'en');
-    }
-
-    // Construimos las opciones JS
-    $jsOptions = collect($config)->map(function ($value, $key) use ($rawKeys) {
-        // Los callbacks JS se pasan sin comillas
-        if (in_array($key, $rawKeys)) {
-            return "$key: $value";
-        }
-
-        // Forzamos el locale a ser un string sin comillas
-        if ($key === 'locale' && is_string($value)) {
-            return "$key: '$value'";
-        }
-
-        // Todos los demás valores se json_encode
-        return "$key: " . json_encode($value);
-    })->join(",\n");
-
-    // Envolvemos en un objeto
-    $jsOptions = "{" . $jsOptions . "}";
 @endphp
 
 <x-dynamic-component
@@ -32,9 +7,9 @@
     :field="$field"
 >
     <div
-        x-data="{}"
-        x-init="flatpickr($refs.input, {!! $jsOptions !!})"
-        @flatpickr:refresh.window="flatpickr($refs.input, {!! $jsOptions !!})"
+        x-data="flatpickrComponent(@js($config))"
+        x-init="init()"
+        @flatpickr:refresh.window="refresh()"
         class="filament-forms-input-wrapper"
     >
         <input
