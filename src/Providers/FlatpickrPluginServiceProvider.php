@@ -42,9 +42,9 @@ class FlatpickrPluginServiceProvider extends PackageServiceProvider
             ];
 
             // Idioma
-            $locale = config('filament-flatpickr.default_locale');
+            $locale = config('filament-flatpickr.default_locale', 'en');
             if ($locale) {
-                $assets[] = Js::make("flatpickr-locale", "$base/l10n/{$locale}.js");
+                $assets[] = Js::make("flatpickr-locale", "$base/l10n/$locale.js");
             }
 
             // Plugins (carpeta o archivo suelto)
