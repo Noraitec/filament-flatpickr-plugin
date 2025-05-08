@@ -7,7 +7,9 @@
         $config['locale'] = config('filament-flatpickr.default_locale', 'en');
     }
 
-    $jsOptions = '{' . collect($config)->map(function ($value, $key) use ($rawKeys) {
+    // Construimos las opciones JS
+    $jsOptions = collect($config)->map(function ($value, $key) use ($rawKeys) {
+        // Los callbacks JS se pasan sin comillas
         if (in_array($key, $rawKeys)) {
             return "$key: $value";
         }
@@ -17,8 +19,12 @@
             return "$key: '$value'";
         }
 
+        // Todos los demás valores se json_encode
         return "$key: " . json_encode($value);
-    })->join(', ') . '}';
+    })->join(",\n");
+
+    // Envolvemos en un objeto
+    $jsOptions = "{" . $jsOptions . "}";
 @endphp
 
 <x-dynamic-component
