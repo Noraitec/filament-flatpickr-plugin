@@ -1,6 +1,4 @@
 <?php
-
-
 /**
  * This file is part of the Noraitec Filament Flatpickr Plugin.
  *
@@ -19,11 +17,12 @@
  use Noraitec\FilamentFlatpickrPlugin\Components\Concerns\HasDateOptions;
  use Noraitec\FilamentFlatpickrPlugin\Components\Concerns\HasUIConfig;
  use Noraitec\FilamentFlatpickrPlugin\Components\Concerns\HasDisplayOptions;
+ use Noraitec\FilamentFlatpickrPlugin\Components\Concerns\HasWeekSelect;
  
  
  class Flatpickr extends Field
  {
-     use HasLocalization, HasTimeOptions, HasDateOptions, HasUIConfig, HasDisplayOptions;
+     use HasLocalization, HasTimeOptions, HasDateOptions, HasUIConfig, HasDisplayOptions ,HasWeekSelect;
  
      protected string $view = 'filament-flatpickr::components.flatpickr';
      protected array $options = [];
