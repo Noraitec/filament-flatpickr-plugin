@@ -2,9 +2,19 @@
     $config = $field->getOptions();
     $rawKeys = ['onChange', 'onOpen', 'onClose', 'onReady', 'onValueUpdate'];
 
+    // Aseguramos que siempre se incluya el locale
+    if (!isset($config['locale'])) {
+        $config['locale'] = config('filament-flatpickr.default_locale', 'en');
+    }
+
     $jsOptions = '{' . collect($config)->map(function ($value, $key) use ($rawKeys) {
         if (in_array($key, $rawKeys)) {
             return "$key: $value";
+        }
+
+        // Forzamos el locale a ser un string sin comillas
+        if ($key === 'locale' && is_string($value)) {
+            return "$key: '$value'";
         }
 
         return "$key: " . json_encode($value);
@@ -15,7 +25,6 @@
     :component="$getFieldWrapperView()"
     :field="$field"
 >
-
     <div
         x-data="{}"
         x-init="flatpickr($refs.input, {!! $jsOptions !!})"
