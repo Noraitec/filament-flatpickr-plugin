@@ -17,21 +17,23 @@ trait HasWeekSelect
                 'altInput' => true,
                 'altFormat' => 'W \\| \\d\\e F \\d\\e Y - \\d\\e F \\d\\e Y',
                 'onChange' => <<<JS
-function(selectedDates, dateStr, instance) {
-    const weekNumber = dateStr.split("-")[1];
-    const year = dateStr.split("-")[0];
-    const startDate = new Date(year, 0, 1 + (weekNumber - 1) * 7);
-    const endDate = new Date(startDate);
-    endDate.setDate(startDate.getDate() + 6);
-    
-    // Formatear las fechas
-    const options = { year: "numeric", month: "long", day: "numeric" };
-    const startFormatted = startDate.toLocaleDateString("es-ES", options);
-    const endFormatted = endDate.toLocaleDateString("es-ES", options);
-    
-    instance._input.value = `Semana ${weekNumber} | ${startFormatted} - ${endFormatted}`;
-}
-JS,
+                    function(selectedDates, dateStr, instance) {
+                        const [year, weekNumber] = dateStr.split("-");
+                        
+                        // Calcular fechas de inicio y fin de semana
+                        const startDate = new Date(year, 0, 1 + (weekNumber - 1) * 7);
+                        const endDate = new Date(startDate);
+                        endDate.setDate(startDate.getDate() + 6);
+                        
+                        // Formatear las fechas
+                        const options = { year: "numeric", month: "long", day: "numeric" };
+                        const startFormatted = startDate.toLocaleDateString("es-ES", options);
+                        const endFormatted = endDate.toLocaleDateString("es-ES", options);
+                        
+                        // Asignar el valor al campo
+                        instance._input.value = `Semana ${weekNumber} | ${startFormatted} - ${endFormatted}`;
+                    }
+                    JS,
             ]);
         }
 
