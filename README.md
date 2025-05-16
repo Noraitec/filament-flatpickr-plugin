@@ -78,6 +78,76 @@ Flatpickr::make('inicio')
 
 ```
 
+### Uso básico de Fecha con Flatpicker
+
+```php
+
+use Noraitec\FilamentFlatpickrPlugin\Components\Flatpickr;
+
+Flatpickr::make('inicio')
+    ->label('Fecha y hora de inicio')
+    ->enableTime()
+    ->enableSeconds()
+    ->allowInput()
+    ->minDate('today')
+    ->maxDate('2025-12-31')
+    ->defaultDate(now()->format('Y-m-d'))
+    ->altInput()
+    ->altFormat('d/m/Y')
+    ->inline(false)
+    ->mode('range')
+    ->weekNumbers()
+    ->disableMobile()
+    ->locale('es')
+    ->timezone('Europe/Madrid')
+
+
+    //También se pueden configurar funciones JS:
+
+    Flatpickr::make('fecha')
+    ->onChange('function(selectedDates, dateStr, instance) { console.log(dateStr); }');
+
+
+
+```
+
+### Uso de Rango de fechas
+
+```php
+Flatpickr::make('period')
+    ->label('Date Range')
+    ->mode('range')
+    ->altInput()
+    ->altFormat('d/m/Y')
+    ->dateFormat('Y-m-d')
+    ->weekNumbers()
+    ->plugins(['weekSelect'])
+    ->onChange('function(selectedDates, dateStr, instance) { console.log(dateStr); }');
+
+    # Persistencia de los valores del rango
+    //Mutator en el modelo:
+    use Illuminate\Support\Str;
+use Carbon\Carbon;
+
+public function setPeriodAttribute($value)
+{
+    if (Str::contains($value, '–')) {
+        [$start, $end] = array_map('trim', explode('–', $value));
+        $this->attributes['week_start'] = Carbon::createFromFormat('Y-m-d', $start);
+        $this->attributes['week_end']   = Carbon::createFromFormat('Y-m-d', $end);
+    } else {
+        // Fallback: single date stored to both
+        $date = Carbon::parse($value);
+        $this->attributes['week_start'] =
+        $this->attributes['week_end']   = $date;
+    }
+}
+
+//Hidden fields in the form:
+Forms\Components\Hidden::make('fecha_semana_inicio'),
+Forms\Components\Hidden::make('fecha_semana_fin'),
+```
+
 ## 📋 Opciones Soportadas
 
 enableTime, enableSeconds, time_24hr, defaultHour, etc.
