@@ -1,58 +1,51 @@
-import flatpickr from 'flatpickr';
-import weekSelectPlugin from '../flatpickr/plugins/weekSelect/weekSelect'; // ruta relativa ajustada
+// resources/js/flatpickr-init.js
+
+// Se asume que flatpickr y weekSelect están disponibles en window
 
 document.addEventListener('alpine:init', () => {
   Alpine.data('flatpickrComponent', options => ({
+    picker: null,
+
     init() {
-      // Configuración predeterminada
+      // Opciones por defecto
       const defaultOptions = {
         altInput: true,
         dateFormat: 'Y-m-d',
         altFormat: 'F j, Y',
       };
 
-      // Inyectamos el plugin weekSelect
-      const plugins = [new weekSelectPlugin()];
+      // Construye array de plugins, incluyendo weekSelect si existe
+      const plugins = [
+        window.weekSelect && window.weekSelect(),
+      ].filter(Boolean);
 
-      // Mezclamos las opciones: primero defaults, luego plugins, luego opciones del usuario
-      const config = {
-        ...defaultOptions,
-        plugins,
-        ...options,
-        onChange: this.wrapCallback(options.onChange),
-        onOpen: this.wrapCallback(options.onOpen),
-        onClose: this.wrapCallback(options.onClose),
-        onReady: this.wrapCallback(options.onReady),
-        onValueUpdate: this.wrapCallback(options.onValueUpdate),
+      // Mezcla: defaults, plugins, luego options pasadas como argumento
+      const config = Object.assign({}, defaultOptions, { plugins }, options);
+
+      // Aquí ajustamos el onChange para formatear el rango de semana
+      // Personalizamoos la salida: mostrar rango de semana en lugar de fecha única
+      config.onChange = function(selectedDates, dateStr, instance) {
+        if (instance.weekStartDay && instance.weekEndDay) {
+          // Usa altFormat si está definido, si no fallback a dateFormat
+          const fmt = instance.config.altFormat || instance.config.dateFormat;
+          const startStr = instance.formatDate(instance.weekStartDay, fmt);
+          const endStr   = instance.formatDate(instance.weekEndDay,   fmt);
+          instance._input.value = `${startStr} – ${endStr}`;
+        }
       };
 
       try {
         this.picker = flatpickr(this.$refs.input, config);
-      } catch (error) {
-        console.error('Error inicializando Flatpickr:', error);
+      } catch (e) {
+        console.error('Error inicializando Flatpickr:', e);
       }
-    },
-
-    wrapCallback(callback) {
-      if (typeof callback === 'string') {
-        try {
-          return new Function('selectedDates', 'dateStr', 'instance', callback);
-        } catch (e) {
-          console.error('Error al procesar el callback:', e);
-        }
-      } else if (typeof callback === 'function') {
-        return callback;
-      }
-      return undefined;
     },
 
     refresh() {
-      try {
-        if (this.picker) this.picker.destroy();
-        this.init();
-      } catch (error) {
-        console.error('Error al refrescar Flatpickr:', error);
+      if (this.picker) {
+        this.picker.destroy();
       }
+      this.init();
     },
   }));
 });
