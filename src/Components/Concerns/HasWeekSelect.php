@@ -4,27 +4,32 @@ namespace Noraitec\FilamentFlatpickrPlugin\Components\Concerns;
 
 trait HasWeekSelect
 {
-    public function weekSelect(bool $state = true): static
+    /**
+     * Habilita el plugin weekSelect de Flatpickr y aplica configuración básica.
+     *
+     * @param  bool  $state
+     * @param  array $config  Opciones específicas del plugin (p. ej. ['weekStart' => 1])
+     * @return static
+     */
+    public function weekSelect(bool $state = true, array $config = []): static
     {
         if ($state) {
+            // Registra el plugin para que el init JS lo cargue
             $this->withPlugins(['weekSelect']);
+
+            // Configuración por defecto para la selección de semanas
+            $default = [
+                'weekStart' => 1,                    // lunes como inicio de semana
+                'dateFormat' => 'Y-\\WW',            // formato ISO de año-semana (semana con doble W)
+                'altInput'   => true,                // usa campo alternativo para mostrar texto
+                'altFormat'  => "'Semana' W",        // sólo muestra "Semana X" en el input
+            ];
+
+            // Mezcla con la configuración pasada por el usuario
             $this->config([
-                'mode' => 'single',
-                'weekSelect' => true,
-                'dateFormat' => 'Y-W', // Año y semana
-                'altInput' => true,
-                'altFormat' => 'W | d \\d\\e F \\d\\e Y - d \\d\\e F \\d\\e Y',
-                'onChange' => "
-                function(selectedDates, dateStr, instance) {
-                    const [year, weekNumber] = dateStr.split('-');
-                    const startDate = new Date(year, 0, 1 + (weekNumber - 1) * 7);
-                    const endDate = new Date(startDate);
-                    endDate.setDate(startDate.getDate() + 6);
-                    const options = { year: 'numeric', month: 'long', day: 'numeric' };
-                    const startFormatted = startDate.toLocaleDateString('es-ES', options);
-                    const endFormatted = endDate.toLocaleDateString('es-ES', options);
-                    instance._input.value = 'Semana ' + weekNumber + ' | ' + startFormatted + ' - ' + endFormatted;
-                }",
+                'weekSelect' => array_merge($default, $config),
+                // Forzamos modo single que es lo correcto para weekSelect
+                'mode'       => 'single',
             ]);
         }
 

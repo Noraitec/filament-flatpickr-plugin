@@ -1,7 +1,7 @@
 document.addEventListener("alpine:init", () => {
     Alpine.data("flatpickrComponent", (options) => ({
-        picker: null,
         init() {
+            // Configuración predeterminada
             const defaultOptions = {
                 locale: 'en',
                 altInput: true,
@@ -9,7 +9,7 @@ document.addEventListener("alpine:init", () => {
                 altFormat: 'F j, Y',
             };
 
-            // Mezclar opciones por defecto con las del campo
+            // Mezclamos las opciones predeterminadas con las opciones del campo
             const config = {
                 ...defaultOptions,
                 ...options,
@@ -20,24 +20,43 @@ document.addEventListener("alpine:init", () => {
                 onValueUpdate: this.wrapCallback(options.onValueUpdate),
             };
 
-            // Inicializar Flatpickr
-            this.picker = flatpickr(this.$refs.input, config);
+            try {
+                // Inicializamos Flatpickr
+                this.picker = flatpickr(this.$refs.input, config);
+            } catch (error) {
+                console.error("Error inicializando Flatpickr:", error);
+            }
         },
+
         wrapCallback(callback) {
             if (typeof callback === "string") {
                 try {
-                    // Convertir el callback string en una función
-                    return new Function("selectedDates", "dateStr", "instance", callback);
+                    // Verificamos si el callback es una función válida
+                    const functionBody = callback.trim();
+                    if (functionBody.startsWith("(") && functionBody.endsWith("}")) {
+                        // Si es una función completa, la convertimos directamente
+                        return new Function("selectedDates", "dateStr", "instance", functionBody);
+                    } else {
+                        // Si es solo el contenido de una función, envolvemos en una expresión lambda
+                        return new Function("selectedDates", "dateStr", "instance", `(${functionBody})`);
+                    }
                 } catch (e) {
                     console.error("Error al procesar el callback:", e);
                 }
+            } else if (typeof callback === "function") {
+                return callback;
             }
-            return callback;
+            return undefined;
         },
+
         refresh() {
-            if (this.picker) {
-                this.picker.destroy();
+            try {
+                if (this.picker) {
+                    this.picker.destroy();
+                }
                 this.init();
+            } catch (error) {
+                console.error("Error al refrescar Flatpickr:", error);
             }
         }
     }));

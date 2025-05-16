@@ -22,6 +22,7 @@ return [
     */
 
     'use_cdn' => false,
+    'cdn_url'        => 'https://cdn.jsdelivr.net/npm/flatpickr',
 
     /*
     |--------------------------------------------------------------------------
@@ -58,8 +59,10 @@ return [
     */
 
     'plugins' => [
-        'confirmDate',
-        'rangePlugin',
+        'confirmDate',   // Confirmar antes de cerrar
+        'rangePlugin',   // Selección de rangos
+        'monthSelect',   // Selección de meses
+        'weekSelect',    // Selección de semanas
     ],
 
     /*
@@ -72,11 +75,34 @@ return [
     |
     */
 
-    'default_options' => [
-        'allowInput' => true,
-        'dateFormat' => 'd-m-Y',
-        'enableTime' => false,
-        'time_24hr' => true,
-    ],
+   'default_options' => [
+    // Permite que el usuario escriba la fecha manualmente
+    'allowInput'   => true,
+
+    // Formato de fecha para almacenamiento/subida
+    'dateFormat'   => 'd-m-Y',
+
+    // Formato alternativo que ve el usuario (si activas altInput en algún campo)
+    // 'altInput'     => true,
+    // 'altFormat'    => 'F j, Y',
+
+    // No habilitará el selector de hora por defecto
+    'enableTime'   => false,
+
+    // Si habilitas enableTime, muestra 24h
+    'time_24hr'    => true,
+
+    // Localización por defecto (se usará para cargar el locale JS)
+    'locale'       => config('filament-flatpickr.default_locale'),
+
+    // Número de meses mostrados simultáneamente
+    'showMonths'   => 1,
+
+    // Mostrar números de semana en la vista (solo visual)
+    'weekNumbers'  => false,
+
+    // Definir el primer día de la semana (0 = domingo, 1 = lunes)
+    'firstDayOfWeek' => 1,
+],
 
 ];
