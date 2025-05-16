@@ -86,10 +86,6 @@ class FlatpickrPluginServiceProvider extends PackageServiceProvider
             );
         }
 
-        // Registrar manualmente los Blade components
-        FilamentView::registerComponentsFromDirectory(
-            __DIR__ . '/../../resources/views/components',
-            'filament-flatpickr'
-        );
+
     }
 }
