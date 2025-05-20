@@ -1,90 +1,153 @@
 <?php
 
+namespace Tests\Feature\Components;
+
+use Tests\TestCase;
+use ReflectionClass;
 use Noraitec\FilamentFlatpickrPlugin\Components\Flatpickr;
 
-uses(Tests\TestCase::class);
+uses(TestCase::class);
 
-it('returns CDN assets by default', function () {
+beforeEach(function () {
+    // Asegurarnos de partir siempre de la configuración por defecto
+    config()->offsetUnset('filament-flatpickr.assets');
+    config()->offsetUnset('filament-flatpickr.plugins');
+    config()->offsetUnset('filament-flatpickr.test');
+});
+
+it('uses the correct view name', function () {
+    $ref  = new ReflectionClass(Flatpickr::class);
+    $prop = $ref->getProperty('view');
+    $prop->setAccessible(true);
+
+    expect($prop->getValue(Flatpickr::make('foo')))
+        ->toBe('filament-flatpickr::components.flatpickr');
+});
+
+it('returns local assets when assets config is local or missing by default', function () {
+    // Por omisión (no hay clave) debe ser "local"
+    $assets = Flatpickr::getAssets();
+
+    expect($assets)
+        ->toHaveCount(2)
+        ->and($assets[0])->toContain('vendor/filament-flatpickr-plugin/flatpickr.js')
+        ->and($assets[1])->toContain('vendor/filament-flatpickr-plugin/flatpickr.css');
+
+    // Explicitamente local
+    config(['filament-flatpickr.assets' => 'local']);
+    $assets2 = Flatpickr::getAssets();
+
+    expect($assets2)->toMatchArray($assets);
+});
+
+it('returns CDN assets when assets config is cdn', function () {
     config(['filament-flatpickr.assets' => 'cdn']);
 
     $assets = Flatpickr::getAssets();
 
-    expect($assets)->toBeArray()->toHaveCount(2);
-
-    expect($assets[0])->toBe('https://cdn.jsdelivr.net/npm/flatpickr');
-    expect($assets[1])->toBe('https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css');
-});
-
-it('returns local assets when assets config is local', function () {
-    config(['filament-flatpickr.assets' => 'local']);
-
-    $assets = Flatpickr::getAssets();
-
-    expect($assets)->toBeArray()->toHaveCount(2);
-
-    expect($assets[0])->toContain('vendor/filament-flatpickr-plugin/flatpickr.js');
-    expect($assets[1])->toContain('vendor/filament-flatpickr-plugin/flatpickr.css');
+    expect($assets)->toBe([
+        'https://cdn.jsdelivr.net/npm/flatpickr',
+        'https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css',
+    ]);
 });
 
 it('config() merges multiple option arrays', function () {
-    $component = Flatpickr::make('test')
-        ->config(['foo' => 1])
-        ->config(['bar' => 2]);
+    $c = Flatpickr::make('foo')
+        ->config(['x' => 1])
+        ->config(['y' => 2]);
 
-    expect($component->getOptions())->toMatchArray([
-        'foo' => 1,
-        'bar' => 2,
-    ]);
+    expect($c->getOptions())->toMatchArray(['x' => 1, 'y' => 2]);
 });
 
-it('noCalendar() sets the noCalendar option to true', function () {
-    $component = Flatpickr::make('test')->noCalendar();
+it('noCalendar() toggles noCalendar option', function () {
+    $c1 = Flatpickr::make('foo')->noCalendar();
+    expect($c1->getOptions())->toHaveKey('noCalendar', true);
 
-    expect($component->getOptions())
-        ->toHaveKey('noCalendar', true);
+    $c2 = Flatpickr::make('foo')->noCalendar(false);
+    expect($c2->getOptions())->toHaveKey('noCalendar', false);
 });
 
 it('mode() sets the mode option', function () {
-    $component = Flatpickr::make('test')->mode('range');
-
-    expect($component->getOptions())
-        ->toHaveKey('mode', 'range');
+    $c = Flatpickr::make('foo')->mode('range');
+    expect($c->getOptions())->toHaveKey('mode', 'range');
 });
 
-it('serializable(false) does not set any options', function () {
-    $component = Flatpickr::make('test')->serializable(false);
-
-    expect($component->getOptions())->toBeEmpty();
+it('serializable(false) leaves options empty', function () {
+    $c = Flatpickr::make('foo')->serializable(false);
+    expect($c->getOptions())->toBeEmpty();
 });
 
-it('serializable(true) forces multiple mode and injects onChange callback', function () {
-    $component = Flatpickr::make('test')->serializable();
-
-    $opts = $component->getOptions();
+it('serializable(true) enforces multiple mode and injects JSON callback', function () {
+    $c    = Flatpickr::make('foo')->serializable();
+    $opts = $c->getOptions();
 
     expect($opts)
         ->toHaveKey('mode', 'multiple')
-        ->toHaveKey('onChange');
-
-    // chequeamos que el callback JSON.stringify aparezca en la cadena
-    expect($opts['onChange'])->toContain('JSON.stringify');
+        ->toHaveKey('onChange')
+        ->and($opts['onChange'])->toContain('JSON.stringify');
 });
 
-it('withPlugins returns same instance and getPlugins merges correctly', function () {
-    $component = new class('test') extends Flatpickr {
-        protected function getConfiguredPlugins(): array
+it('withPlugins returns self and merges uniquely with configured plugins', function () {
+    config(['filament-flatpickr.plugins' => ['p1', 'p2']]);
+
+    $c   = Flatpickr::make('foo');
+    $ret = $c->withPlugins(['p2', 'p3', 'p3']);
+
+    expect($ret)->toBe($c);
+    expect($c->getPlugins())->toMatchArray(['p1', 'p2', 'p3']);
+});
+
+it('getPlugins handles missing or non-array config gracefully', function () {
+    // Sin configuración → vacío
+    $c1 = Flatpickr::make('foo');
+    expect($c1->getPlugins())->toBe([]);
+
+    // Config nula → vacío
+    config(['filament-flatpickr.plugins' => null]);
+    $c2 = Flatpickr::make('foo');
+    expect($c2->getPlugins())->toBe([]);
+});
+
+it('getConfig returns value or default when missing', function () {
+    config(['filament-flatpickr.test' => 'VALUE']);
+
+    $c1 = new class('foo') extends Flatpickr {
+        public function testGetConfig()
         {
-            return ['confirmDate'];
+            return $this->getConfig('filament-flatpickr.test', 'fallback');
         }
     };
+    expect($c1->testGetConfig())->toBe('VALUE');
 
-    $returned = $component->withPlugins(['rangePlugin', 'confirmDate']);
+    config()->offsetUnset('filament-flatpickr.test');
 
-    expect($returned)->toBe($component);
+    $c2 = new class('foo') extends Flatpickr {
+        public function testGetConfig()
+        {
+            return $this->getConfig('filament-flatpickr.test', 'fallback');
+        }
+    };
+    expect($c2->testGetConfig())->toBe('fallback');
+});
 
-    // getPlugins debe unificar y mantener orden: primero los config, luego los de withPlugins
-    expect($component->getPlugins())->toMatchArray([
-        'confirmDate',
-        'rangePlugin',
-    ]);
+it('getConfiguredPlugins returns config array or empty when missing', function () {
+    config(['filament-flatpickr.plugins' => ['x','y']]);
+
+    $c1 = new class('foo') extends Flatpickr {
+        public function testGetConf(): array
+        {
+            return $this->getConfiguredPlugins();
+        }
+    };
+    expect($c1->testGetConf())->toMatchArray(['x','y']);
+
+    config()->offsetUnset('filament-flatpickr.plugins');
+
+    $c2 = new class('foo') extends Flatpickr {
+        public function testGetConf(): array
+        {
+            return $this->getConfiguredPlugins();
+        }
+    };
+    expect($c2->testGetConf())->toBe([]);
 });
