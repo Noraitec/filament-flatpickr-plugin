@@ -96,5 +96,32 @@ public function getPlugins(): array
     )));
 }
 
+public function noCalendar(bool $noCalendar = true): static
+    {
+        return $this->config(['noCalendar' => $noCalendar]);
+    }
+        public function mode(string $mode): static
+{
+    return $this->config(['mode' => $mode]);
+}
+public function serializable(bool $enabled = true): static
+{
+    if ($enabled) {
+        // Asegúrate de que el modo es multiple
+        $this->config(['mode' => 'multiple']);
 
- }
+        // Establece el callback que JSON-serializa las fechas
+        $this->config([
+            'onChange' => "function(selectedDates, dateStr, instance) {
+                instance._input.value = JSON.stringify(
+                    selectedDates.map(d => instance.formatDate(d, instance.config.dateFormat))
+                );
+            }",
+        ]);
+    }
+
+    return $this;
+}
+
+
+}

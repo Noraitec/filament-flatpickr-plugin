@@ -30,4 +30,9 @@ trait HasTimeOptions
         $this->options['defaultHour'] = $hour;
         return $this;
     }
+    public function enableSeconds(bool $enabled = true): static
+{
+    $this->options['enableSeconds'] = $enabled;
+    return $this;
+}
 }

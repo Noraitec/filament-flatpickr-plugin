@@ -78,14 +78,14 @@ class FlatpickrPluginServiceProvider extends PackageServiceProvider
             FilamentAsset::register([
                 Css::make('flatpickr-css', "{$cdn}/dist/flatpickr.min.css"),
             ]);
-
-            FilamentView::registerRenderHook('scripts.end', fn () => <<<HTML
-                <script src="{$cdn}"></script>
-                <script src="{$cdn}/dist/l10n/{config('filament-flatpickr.default_locale', 'en')}.js"></script>
-            HTML
+            $locale = config('filament-flatpickr.default_locale', 'en');
+            FilamentView::registerRenderHook(
+                'scripts.end',
+                fn() => <<<HTML
+    <script src="{$cdn}"></script>
+    <script src="{$cdn}/dist/l10n/{$locale}.js"></script>
+HTML
             );
         }
-
-
     }
 }

@@ -1,39 +1,65 @@
 // resources/js/flatpickr-init.js
 
-// Se asume que flatpickr y weekSelect están disponibles en window
-
 document.addEventListener('alpine:init', () => {
   Alpine.data('flatpickrComponent', options => ({
     picker: null,
 
     init() {
-      // Opciones por defecto
+      // 1️⃣ Defaults
       const defaultOptions = {
         altInput: true,
         dateFormat: 'Y-m-d',
         altFormat: 'F j, Y',
       };
 
-      // Construye array de plugins, incluyendo weekSelect si existe
-      const plugins = [
-        window.weekSelect && window.weekSelect(),
-      ].filter(Boolean);
+      // 2️⃣ Build plugin instances
+      const pluginInstances = [];
 
-      // Mezcla: defaults, plugins, luego options pasadas como argumento
-      const config = Object.assign({}, defaultOptions, { plugins }, options);
+      // 2a) Always honor `options.weekSelect` (even if options.plugins is missing)
+      if (options.weekSelect && typeof window.weekSelect === 'function') {
+        pluginInstances.push(
+          window.weekSelect(options.weekSelect)
+        );
+      }
 
-      // Aquí ajustamos el onChange para formatear el rango de semana
-      // Personalizamoos la salida: mostrar rango de semana en lugar de fecha única
-      config.onChange = function(selectedDates, dateStr, instance) {
-        if (instance.weekStartDay && instance.weekEndDay) {
-          // Usa altFormat si está definido, si no fallback a dateFormat
-          const fmt = instance.config.altFormat || instance.config.dateFormat;
-          const startStr = instance.formatDate(instance.weekStartDay, fmt);
-          const endStr   = instance.formatDate(instance.weekEndDay,   fmt);
-          instance._input.value = `${startStr} – ${endStr}`;
-        }
+      // 2b) Then any other plugins listed in options.plugins
+      if (Array.isArray(options.plugins)) {
+        options.plugins.forEach(name => {
+          if (name === 'weekSelect') return; // we already did it
+          const factory = window[name] || window[`${name}Plugin`];
+          if (typeof factory === 'function') {
+            pluginInstances.push(
+              factory(options[name] || {})
+            );
+          }
+        });
+      }
+
+      // 3️⃣ Merge everything
+      const config = {
+        ...defaultOptions,
+        ...options,
+        plugins: pluginInstances,
       };
 
+      // 4️⃣ If weekSelect is active, override onChange to write a full‐week range
+      if (options.weekSelect && window.weekSelect) {
+        const originalOnChange = config.onChange;
+        config.onChange = function(selectedDates, dateStr, instance) {
+          if (instance.weekStartDay && instance.weekEndDay) {
+            const fmt = instance.config.altFormat || instance.config.dateFormat;
+            instance._input.value = [
+              instance.formatDate(instance.weekStartDay, fmt),
+              instance.formatDate(instance.weekEndDay,   fmt),
+            ].join(' – ');
+          }
+          if (typeof originalOnChange === 'function') {
+            originalOnChange.call(this, selectedDates, dateStr, instance);
+          }
+        };
+      }
+
+      // 5️⃣ Initialize Flatpickr
       try {
         this.picker = flatpickr(this.$refs.input, config);
       } catch (e) {
